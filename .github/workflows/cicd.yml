@@ -1,0 +1,46 @@
+name: Multi Job Demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  all-in-one:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # --- CODE ---
+      - name: Verify code
+        run: |
+          echo "Files in the repo:"
+          ls -la
+
+      # --- BUILD ---
+      - name: Build
+        run: |
+          echo "Building the project..."
+          cp index.html build-output.html
+          echo "<!-- Built at $(date) -->" >> build-output.html
+          echo "Build complete! Created build-output.html"
+
+      # --- TEST ---
+      - name: Test
+        run: |
+          echo "Running tests on build-output.html..."
+          grep -q "<title>" build-output.html && echo "PASS: title tag found" || exit 1
+          grep -q "<h1>" build-output.html && echo "PASS: h1 tag found" || exit 1
+          echo "All tests passed!"
+          # build-output.html is available here because
+          # it was created in the Build step on the SAME runner.
+
+      # --- DEPLOY ---
+      - name: Deploy
+        run: |
+          echo "Deploying build-output.html to production..."
+          echo "Deployment complete!"
+ing deployed:"
+          ls -la *.html
+          echo "Deployment complete!"
