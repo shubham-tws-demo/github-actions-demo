@@ -38,9 +38,9 @@ jobs:
 
       # --- DEPLOY ---
       - name: Deploy
-        run: |
+        run: | 
           echo "Deploying build-output.html to production..."
           echo "Deployment complete!"
-ing deployed:"
-          ls -la *.html
+          echo "Deploying build-output.html to production..."
           echo "Deployment complete!"
+
