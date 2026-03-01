@@ -1,0 +1,94 @@
+# ============================================================
+# PART 3 — Triggers and Events
+# ============================================================
+
+name: Trigger Examples
+
+# ----- TRIGGERS -----
+# You can combine multiple triggers in one workflow.
+# The workflow runs when ANY of these events happen.
+on:
+
+  # 1. PUSH — runs when code is pushed
+  #    You can filter by branch and file path.
+  push:
+    branches:
+      - main           # Only trigger on pushes to main
+      # - 'feature/*'  # Uncomment to also trigger on feature branches
+    paths:
+      - '**.html'      # Only trigger when HTML files change
+      # Remove the "paths" block to trigger on ALL file changes
+
+  # 2. PULL REQUEST — runs when a PR is opened or updated
+  #    Great for running tests before merging.
+  pull_request:
+    branches:
+      - main           # Only for PRs targeting main
+
+  # 3. MANUAL — adds a "Run workflow" button in the Actions tab
+  #    You can define inputs that the user fills in before running.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Which environment to target?'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      debug:
+        description: 'Enable debug logging?'
+        required: false
+        default: false
+        type: boolean
+
+  # 4. SCHEDULED — runs on a cron schedule (UTC timezone)
+  #    Useful for nightly builds, cleanup jobs, reports, etc.
+  # schedule:
+  #   - cron: '0 9 * * 1'  # Every Monday at 9:00 AM UTC
+  #   Cron format: minute hour day-of-month month day-of-week
+  #   Uncomment the above to enable scheduled runs.
+
+jobs:
+  # ----- JOB 1: Show which trigger fired -----
+  show-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Which event triggered this?
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Triggered by: ${{ github.actor }}"
+
+  # ----- JOB 2: Runs only on push -----
+  on-push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Push detected
+        run: |
+          echo "New code was pushed to ${{ github.ref_name }}"
+          echo "Commit message: ${{ github.event.head_commit.message }}"
+
+  # ----- JOB 3: Runs only on pull request -----
+  on-pull-request:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: PR detected
+        run: |
+          echo "Pull request #${{ github.event.pull_request.number }}"
+          echo "Title: ${{ github.event.pull_request.title }}"
+          echo "Author: ${{ github.event.pull_request.user.login }}"
+
+  # ----- JOB 4: Runs only on manual trigger -----
+  on-manual:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Manual trigger detected
+        run: |
+          echo "Manually triggered by: ${{ github.actor }}"
+          echo "Environment selected: ${{ inputs.environment }}"
+          echo "Debug mode: ${{ inputs.debug }}"
