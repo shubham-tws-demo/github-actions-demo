@@ -1,0 +1,64 @@
+# ============================================================
+# PART 4 — Deploy a Website to GitHub Pages
+# ============================================================
+
+
+name: Deploy to GitHub Pages
+
+# ----- TRIGGER -----
+# Only deploy when code is pushed to the main branch.
+# Also allow manual deploys from the Actions tab.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# ----- PERMISSIONS -----
+# GitHub Actions needs explicit permission to deploy to Pages.
+# Without these, the deploy step will fail with a 403 error.
+permissions:
+  pages: write      # Permission to deploy to GitHub Pages
+  id-token: write   # Required for secure OIDC token authentication
+  contents: read    # Permission to read the repo contents
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    # ----- ENVIRONMENT -----
+    # Links this job to the "github-pages" environment.
+    # After deployment, the live URL appears in the Actions log.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Step 1: Get the code onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Configure GitHub Pages settings
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      # Step 3: Package the site files into an artifact
+      # The "path" tells it which folder to deploy.
+      # "." means the root of the repo (where index.html lives).
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      # Step 4: Deploy the artifact to GitHub Pages
+      # The "id" lets other steps reference this step's outputs,
+      # like the page_url used in the environment block above.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+#   6. Your site is live at: https://<username>.github.io/<repo>/
+#
+# Try changing index.html and pushing again —
+# the site updates automatically. That's CI/CD!
+# ============================================================
