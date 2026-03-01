@@ -1,0 +1,37 @@
+name: Hello World
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  greet:
+
+    # Runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Say Hello
+        run: echo "Hello Dosto"
+
+      - name: Tell date
+        run: date
+
+      - name: Show working dir
+        run: pwd
+
+  details:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show username
+        run: whoami
+
+      - name: What is the OS?
+        run: uname -a
+
+      - name: which docker
+        run: docker --version
+
+      - name: which python
+        run: python3 --version
