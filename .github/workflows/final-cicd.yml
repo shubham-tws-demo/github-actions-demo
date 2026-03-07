@@ -1,0 +1,14 @@
+name: Flask Main CICD Pipeline
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/docker-build-push.yml
+    secrets: inherit
+
+  cd:
+    needs: ci
+    uses: ./.github/workflows/self-hosted-deploy.yml
+    secrets: inherit
