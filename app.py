@@ -15,10 +15,6 @@ def home():
             body {
                 font-family: Arial, sans-serif;
                 display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                margin: 0;
                 background: linear-gradient(135deg, #667eea, #764ba2);
                 color: white;
                 text-align: center;
@@ -30,8 +26,6 @@ def home():
     <body>
         <div>
             <h1>Deployed with GitHub Actions</h1>
-            <p>This Python Flask app was built, tested, and deployed automatically.</p>
-            <p>Built during the GitHub Actions Josh Batch 10 session</p>
         </div>
     </body>
     </html>
