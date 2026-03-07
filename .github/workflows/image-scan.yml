@@ -17,4 +17,4 @@ jobs:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/actions-demo-flask:latest
           severity: CRITICAL
           exit-code: "1"
-          trivyignores: .trivyignore
+          trivyignores: ./.trivyignore
