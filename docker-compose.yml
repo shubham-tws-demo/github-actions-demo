@@ -1,0 +1,12 @@
+services:
+  web:
+    # On EC2, set these env vars or replace with your actual image path.
+    image: ${DOCKERHUB_USERNAME}/actions-demo-flask:latest
+
+    # ----- PORTS -----
+    ports:
+      - "5000:5000"
+
+    # ----- RESTART POLICY -----
+    # "unless-stopped" means the container auto-restarts if it
+    restart: unless-stopped
