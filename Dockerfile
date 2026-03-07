@@ -5,7 +5,7 @@ WORKDIR /app
 
 # ----- COPY DEPENDENCIES FIRST -----
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt "jaraco.context>=6.1.0" "wheel>=0.46.2" 
 
 # ----- COPY APPLICATION CODE -----
 COPY app.py ./
