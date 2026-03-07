@@ -1,0 +1,37 @@
+ame: Docker Build & Push
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Get the code (including Dockerfile) onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Log in to DockerHub
+      # Uses the secrets you configured in the setup instructions above.
+      # DOCKERHUB_USERNAME = your DockerHub username
+      # DOCKERHUB_TOKEN    = your DockerHub access token
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Build the Docker image and push it to DockerHub
+      # We tag with both "latest" and the commit SHA.
+      #   - "latest" = always points to the newest build
+      #   - commit SHA = exact version tracking (like a receipt)
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/actions-demo-flask:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/actions-demo-flask:${{ github.sha }}
