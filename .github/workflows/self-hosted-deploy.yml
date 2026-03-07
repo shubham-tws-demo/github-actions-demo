@@ -5,6 +5,8 @@ on:
 
 jobs:
   deploy:
+    env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
     runs-on: self-hosted
     steps:
       - name: Checkout code
