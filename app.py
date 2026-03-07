@@ -41,4 +41,3 @@ def health():
       - Monitoring tools to check app availability
     """
     return jsonify({"status": "healthy", "app": "github-actions-demo"})
-
