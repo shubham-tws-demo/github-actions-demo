@@ -1,0 +1,45 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code-quality:
+    uses: ./.github/workflows/code-quality.yml
+    secrets: inherit
+
+  secret-scan:
+    uses: ./.github/workflows/secret-scan.yml
+    secrets: inherit
+
+  dependency-scan:
+    uses: ./.github/workflows/dependency-scan.yml
+    secrets: inherit
+
+  docker-lint:
+    uses: ./.github/workflows/docker-lint.yml
+    secrets: inherit
+
+  build:
+    needs: [code-quality, secret-scan, dependency-scan, docker-lint]
+    uses: ./.github/workflows/docker-build-push.yml
+    secrets: inherit
+
+  image-scan:
+    needs: [build]
+    uses: ./.github/workflows/image-scan.yml
+    secrets: inherit
+
+  deploy:
+    needs: [image-scan]
+    uses: ./.github/workflows/deploy-remote.yml
+    secrets: inherit
